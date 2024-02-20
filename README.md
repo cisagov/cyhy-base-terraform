@@ -14,22 +14,6 @@ appropriate for the major languages that we use.
 See [here](https://www.terraform.io/docs/modules/index.html) for more
 details on Terraform modules and the standard module structure.
 
-## Usage ##
-
-```hcl
-module "example" {
-  source = "github.com/cisagov/cyhy-account"
-
-  aws_region            = "us-west-1"
-  aws_availability_zone = "b"
-  subnet_id             = "subnet-0123456789abcdef0"
-}
-```
-
-## Examples ##
-
-- [Basic usage](https://github.com/cisagov/cyhy-account/tree/develop/examples/basic_usage)
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements ##
 
