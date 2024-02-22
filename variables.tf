@@ -4,6 +4,11 @@
 # You must provide a value for each of these parameters.
 # ------------------------------------------------------------------------------
 
+variable "godlike_usernames" {
+  description = "The usernames associated with the god-like accounts to be created, which are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account.  The format first.last is recommended.  Example: [\"firstname1.lastname1\",  \"firstname2.lastname2\"]."
+  type        = list(string)
+}
+
 variable "state_bucket_name" {
   description = "The name to use for the S3 bucket that will store the Terraform state."
   type        = string
@@ -15,9 +20,27 @@ variable "state_bucket_name" {
 # These parameters have reasonable defaults.
 # ------------------------------------------------------------------------------
 
+variable "assume_any_role_policy_description" {
+  default     = "Allow assumption of any role in the account."
+  description = "The description to associate with the IAM policy that allows assumption of any role in the account."
+  type        = string
+}
+
+variable "assume_any_role_policy_name" {
+  default     = "AssumeAnyRole"
+  description = "The name to assign the IAM policy that allows assumption of any role in the account."
+  type        = string
+}
+
 variable "aws_region" {
   default     = "us-east-1"
   description = "The AWS region to deploy into (e.g. us-east-1)."
+  type        = string
+}
+
+variable "gods_group_name" {
+  default     = "gods"
+  description = "The name of the group to be created for the god-like users that are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account."
   type        = string
 }
 
