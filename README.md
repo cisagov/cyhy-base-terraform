@@ -33,6 +33,8 @@ details on Terraform modules and the standard module structure.
 | Name | Source | Version |
 |------|--------|---------|
 | cw\_alarm\_sns | github.com/cisagov/sns-send-to-account-email-tf-module | n/a |
+| user\_group\_mod\_event | github.com/cisagov/user-group-mod-alert-tf-module | n/a |
+| user\_group\_mod\_sns | github.com/cisagov/sns-send-to-account-email-tf-module | n/a |
 
 ## Resources ##
 
@@ -58,6 +60,7 @@ details on Terraform modules and the standard module structure.
 | [aws_iam_policy_document.assume_any_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.self_managed_creds_with_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.self_managed_creds_without_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.sns_topic_access_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs ##
 
