@@ -44,6 +44,42 @@ variable "gods_group_name" {
   type        = string
 }
 
+variable "password_policy_allow_users_to_change_password" {
+  default     = true
+  description = "Whether to allow users to change their own passwords."
+  type        = bool
+}
+
+variable "password_policy_minimum_password_length" {
+  default     = 12
+  description = "The minimum required length for IAM user passwords."
+  type        = number
+}
+
+variable "password_policy_require_lowercase_characters" {
+  default     = true
+  description = "Whether IAM user passwords are required to contain at least one lowercase letter from the Latin alphabet (a-z)."
+  type        = bool
+}
+
+variable "password_policy_require_numbers" {
+  default     = true
+  description = "Whether IAM user passwords are required to contain at least one number."
+  type        = bool
+}
+
+variable "password_policy_require_symbols" {
+  default     = true
+  description = "Whether IAM user passwords are required to contain at least one non-alphanumeric character (! @ # $ % ^ & * ( ) _ + - = [ ] { } | ')."
+  type        = bool
+}
+
+variable "password_policy_require_uppercase_characters" {
+  default     = true
+  description = "Whether IAM user passwords are required to contain at least one uppercase letter from the Latin alphabet (A-Z)."
+  type        = bool
+}
+
 variable "self_managed_creds_with_mfa_policy_description" {
   default     = "Allows sufficient access for users to administer their own user accounts, requiring multi-factor authentication (MFA)."
   description = "The description to associate with the IAM policy that allows users to administer their own user accounts, requiring multi-factor authentication (MFA)."

@@ -41,6 +41,7 @@ details on Terraform modules and the standard module structure.
 | Name | Type |
 |------|------|
 | [aws_dynamodb_table.state_lock_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table) | resource |
+| [aws_iam_account_password_policy.users](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy) | resource |
 | [aws_iam_group.gods](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group) | resource |
 | [aws_iam_group_policy_attachment.administratoraccess_managed_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
 | [aws_iam_group_policy_attachment.assume_any_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
@@ -71,6 +72,12 @@ details on Terraform modules and the standard module structure.
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
 | godlike\_usernames | The usernames associated with the god-like accounts to be created, which are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account.  The format first.last is recommended.  Example: ["firstname1.lastname1",  "firstname2.lastname2"]. | `list(string)` | n/a | yes |
 | gods\_group\_name | The name of the group to be created for the god-like users that are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account. | `string` | `"gods"` | no |
+| password\_policy\_allow\_users\_to\_change\_password | Whether to allow users to change their own passwords. | `bool` | `true` | no |
+| password\_policy\_minimum\_password\_length | The minimum required length for IAM user passwords. | `number` | `12` | no |
+| password\_policy\_require\_lowercase\_characters | Whether IAM user passwords are required to contain at least one lowercase letter from the Latin alphabet (a-z). | `bool` | `true` | no |
+| password\_policy\_require\_numbers | Whether IAM user passwords are required to contain at least one number. | `bool` | `true` | no |
+| password\_policy\_require\_symbols | Whether IAM user passwords are required to contain at least one non-alphanumeric character (! @ # $ % ^ & * ( ) \_ + - = [ ] { } \| '). | `bool` | `true` | no |
+| password\_policy\_require\_uppercase\_characters | Whether IAM user passwords are required to contain at least one uppercase letter from the Latin alphabet (A-Z). | `bool` | `true` | no |
 | self\_managed\_creds\_with\_mfa\_policy\_description | The description to associate with the IAM policy that allows users to administer their own user accounts, requiring multi-factor authentication (MFA). | `string` | `"Allows sufficient access for users to administer their own user accounts, requiring multi-factor authentication (MFA)."` | no |
 | self\_managed\_creds\_with\_mfa\_policy\_name | The name to assign the IAM policy that allows users to administer their own user accounts, requiring multi-factor authentication (MFA). | `string` | `"SelfManagedCredsWithMFA"` | no |
 | self\_managed\_creds\_without\_mfa\_policy\_description | The description to associate with the IAM policy that allows users to administer their own user accounts, without requiring multi-factor authentication (MFA). | `string` | `"Allows sufficient access for users to administer their own user accounts, without requiring multi-factor authentication (MFA)."` | no |
