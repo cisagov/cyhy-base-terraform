@@ -3,6 +3,11 @@ output "assume_any_role_policy" {
   value       = aws_iam_policy.assume_any_role
 }
 
+output "cw_alarm_sns_topic" {
+  description = "The SNS topic to which a message is sent when a CloudWatch alarm is triggered."
+  value       = module.cw_alarm_sns.sns_topic
+}
+
 output "godlike_users" {
   description = "The IAM users that are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account."
   value       = aws_iam_user.gods

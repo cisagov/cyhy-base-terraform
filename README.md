@@ -30,7 +30,9 @@ details on Terraform modules and the standard module structure.
 
 ## Modules ##
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| cw\_alarm\_sns | github.com/cisagov/sns-send-to-account-email-tf-module | n/a |
 
 ## Resources ##
 
@@ -81,6 +83,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | assume\_any\_role\_policy | The IAM role that allows assumption of any role in the account. |
+| cw\_alarm\_sns\_topic | The SNS topic to which a message is sent when a CloudWatch alarm is triggered. |
 | godlike\_users | The IAM users that are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account. |
 | gods\_group | The IAM group containing the god-like users that are allowed to access the Terraform backend, are IAM administrators for the Users account, and are allowed to assume any role that has a trust relationship with the Users account. |
 | selfmanagedcredswithmfa\_policy | The IAM policy that allows users to administer their own user accounts, requiring multi-factor authentication (MFA). |
