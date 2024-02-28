@@ -2,33 +2,50 @@
 
 [![GitHub Build Status](https://github.com/cisagov/cyhy-account/workflows/build/badge.svg)](https://github.com/cisagov/cyhy-account/actions)
 
-This is a generic skeleton project that can be used to quickly get a
-new [cisagov](https://github.com/cisagov) [Terraform
-module](https://www.terraform.io/docs/modules/index.html) GitHub
-repository started.  This skeleton project contains [licensing
-information](LICENSE), as well as [pre-commit
-hooks](https://pre-commit.com) and
-[GitHub Actions](https://github.com/features/actions) configurations
-appropriate for the major languages that we use.
+This project contains the Terraform code that represents the initial configuration
+for an account hosting the [CyHy scanning infrastructure](https://github.com/cisagov/cyhy_amis).
 
-See [here](https://www.terraform.io/docs/modules/index.html) for more
-details on Terraform modules and the standard module structure.
+## Bootstrapping ##
 
-## Usage ##
+Note that this configuration must be bootstrapped. This is because initially there
+are no resources in the account that can be used to host remote shared Terraform
+state. Therefore you must first apply this Terraform code with no backend configuration
+so that the state is created locally.
 
-```hcl
-module "example" {
-  source = "github.com/cisagov/cyhy-account"
+To do this, follow these steps:
 
-  aws_region            = "us-west-1"
-  aws_availability_zone = "b"
-  subnet_id             = "subnet-0123456789abcdef0"
-}
-```
+1. Comment out all the content in the `backend.tf` file.
+1. Run the command `terraform init -upgrade`.  Note that if you have previously
+   used a different Terraform backend (e.g. for a different environment), you
+   will need to run `terraform init -reconfigure -upgrade`.
+1. Create a Terraform workspace (if you haven't already done so) by running
+   `terraform workspace new <workspace_name>`
+1. Create a `<workspace_name>.tfvars` file with all of the required variables and
+   any optional variables that you want to override (see [Inputs](#inputs) below
+   for details):
 
-## Examples ##
+   ```hcl
+   godlike_usernames       = ["firstname1.lastname1", "firstname2.lastname2"]
+   state_bucket_name       = "my-terraform-state-bucket"
+   third_party_bucket_name = "my-third-party-bucket"
 
-- [Basic usage](https://github.com/cisagov/cyhy-account/tree/develop/examples/basic_usage)
+   tags = {
+     Team        = "VM Fusion - Development"
+     Application = "Cyber Hygiene"
+     Workspace   = "production"
+   }
+   ```
+
+1. Run the command `terraform apply -var-file=<workspace_name>.tfvars`.
+1. Revert the changes you made to `backend.tf` in step 1.
+1. Edit the bucket name in `backend.tf` to match the `state_bucket_name` variable
+   in your `<workspace_name>.tfvars` file.
+1. Run the command `terraform init`.  When Terraform asks 'Do you want to migrate
+   all workspaces to "s3"?', enter "yes".
+1. Run the command `terraform apply -var-file=<workspace_name>.tfvars`.
+
+At this point the account has been bootstrapped, and you can apply future changes
+by simply running `terraform apply -var-file=<workspace_name>.tfvars`.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements ##
@@ -46,34 +63,85 @@ module "example" {
 
 ## Modules ##
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| cw\_alarm\_sns | github.com/cisagov/sns-send-to-account-email-tf-module | n/a |
+| session\_manager | github.com/cisagov/session-manager-tf-module | n/a |
+| user\_group\_mod\_event | github.com/cisagov/user-group-mod-alert-tf-module | n/a |
+| user\_group\_mod\_sns | github.com/cisagov/sns-send-to-account-email-tf-module | n/a |
 
 ## Resources ##
 
 | Name | Type |
 |------|------|
-| [aws_instance.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
-| [aws_ami.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
-| [aws_default_tags.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/default_tags) | data source |
+| [aws_dynamodb_table.state_lock_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table) | resource |
+| [aws_iam_account_password_policy.users](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_account_password_policy) | resource |
+| [aws_iam_group.gods](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group) | resource |
+| [aws_iam_group_policy_attachment.administratoraccess_managed_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
+| [aws_iam_group_policy_attachment.assume_any_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
+| [aws_iam_group_policy_attachment.job_function_billing_managed_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_group_policy_attachment) | resource |
+| [aws_iam_policy.assume_any_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.self_managed_creds_with_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.self_managed_creds_without_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_user.gods](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
+| [aws_iam_user_group_membership.gods](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_group_membership) | resource |
+| [aws_iam_user_policy_attachment.self_managed_creds_without_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_policy_attachment) | resource |
+| [aws_s3_bucket.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_ownership_controls.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
+| [aws_s3_bucket_ownership_controls.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
+| [aws_s3_bucket_public_access_block.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_public_access_block.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_s3_bucket_versioning.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
+| [aws_s3_bucket_versioning.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
+| [aws_caller_identity.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.assume_any_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.self_managed_creds_with_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.self_managed_creds_without_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.sns_topic_access_policy_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs ##
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| ami\_owner\_account\_id | The ID of the AWS account that owns the Example AMI, or "self" if the AMI is owned by the same account as the provisioner. | `string` | `"self"` | no |
-| aws\_availability\_zone | The AWS availability zone to deploy into (e.g. a, b, c, etc.). | `string` | `"a"` | no |
+| assume\_any\_role\_policy\_description | The description to associate with the IAM policy that allows assumption of any role in the account. | `string` | `"Allow assumption of any role in the account."` | no |
+| assume\_any\_role\_policy\_name | The name to assign the IAM policy that allows assumption of any role in the account. | `string` | `"AssumeAnyRole"` | no |
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
-| subnet\_id | The ID of the AWS subnet to deploy into (e.g. subnet-0123456789abcdef0). | `string` | n/a | yes |
+| godlike\_usernames | The usernames associated with the god-like accounts to be created, which are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account.  The format first.last is recommended.  Example: ["firstname1.lastname1",  "firstname2.lastname2"]. | `list(string)` | n/a | yes |
+| gods\_group\_name | The name of the group to be created for the god-like users that are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account. | `string` | `"gods"` | no |
+| password\_policy\_allow\_users\_to\_change\_password | Whether to allow users to change their own passwords. | `bool` | `true` | no |
+| password\_policy\_minimum\_password\_length | The minimum required length for IAM user passwords. | `number` | `12` | no |
+| password\_policy\_require\_lowercase\_characters | Whether IAM user passwords are required to contain at least one lowercase letter from the Latin alphabet (a-z). | `bool` | `true` | no |
+| password\_policy\_require\_numbers | Whether IAM user passwords are required to contain at least one number. | `bool` | `true` | no |
+| password\_policy\_require\_symbols | Whether IAM user passwords are required to contain at least one non-alphanumeric character (! @ # $ % ^ & * ( ) \_ + - = [ ] { } \| '). | `bool` | `true` | no |
+| password\_policy\_require\_uppercase\_characters | Whether IAM user passwords are required to contain at least one uppercase letter from the Latin alphabet (A-Z). | `bool` | `true` | no |
+| self\_managed\_creds\_with\_mfa\_policy\_description | The description to associate with the IAM policy that allows users to administer their own user accounts, requiring multi-factor authentication (MFA). | `string` | `"Allows sufficient access for users to administer their own user accounts, requiring multi-factor authentication (MFA)."` | no |
+| self\_managed\_creds\_with\_mfa\_policy\_name | The name to assign the IAM policy that allows users to administer their own user accounts, requiring multi-factor authentication (MFA). | `string` | `"SelfManagedCredsWithMFA"` | no |
+| self\_managed\_creds\_without\_mfa\_policy\_description | The description to associate with the IAM policy that allows users to administer their own user accounts, without requiring multi-factor authentication (MFA). | `string` | `"Allows sufficient access for users to administer their own user accounts, without requiring multi-factor authentication (MFA)."` | no |
+| self\_managed\_creds\_without\_mfa\_policy\_name | The name to assign the IAM policy that allows users to administer their own user accounts, without requiring multi-factor authentication (MFA). | `string` | `"SelfManagedCredsWithoutMFA"` | no |
+| state\_bucket\_name | The name to use for the S3 bucket that will store the Terraform state. | `string` | n/a | yes |
+| state\_table\_name | The name to use for the DynamoDB table that will be used for Terraform state locking. | `string` | `"terraform-state-lock"` | no |
+| state\_table\_read\_capacity | The number of read units for the DynamoDB table that will be used for Terraform state locking. | `number` | `5` | no |
+| state\_table\_write\_capacity | The number of write units for the DynamoDB table that will be used for Terraform state locking. | `number` | `5` | no |
+| tags | Tags to apply to all AWS resources created. | `map(string)` | `{}` | no |
+| third\_party\_bucket\_name | The name to use for the S3 bucket that will store third-party files. | `string` | n/a | yes |
 
 ## Outputs ##
 
 | Name | Description |
 |------|-------------|
-| arn | The EC2 instance ARN. |
-| availability\_zone | The AZ where the EC2 instance is deployed. |
-| id | The EC2 instance ID. |
-| private\_ip | The private IP of the EC2 instance. |
-| subnet\_id | The ID of the subnet where the EC2 instance is deployed. |
+| assume\_any\_role\_policy | The IAM role that allows assumption of any role in the account. |
+| cw\_alarm\_sns\_topic | The SNS topic to which a message is sent when a CloudWatch alarm is triggered. |
+| godlike\_users | The IAM users that are allowed to access the Terraform backend, are IAM administrators, and are allowed to assume any role in the account. |
+| gods\_group | The IAM group containing the god-like users that are allowed to access the Terraform backend, are IAM administrators for the Users account, and are allowed to assume any role that has a trust relationship with the Users account. |
+| selfmanagedcredswithmfa\_policy | The IAM policy that allows users to administer their own user accounts, requiring multi-factor authentication (MFA). |
+| selfmanagedcredswithoutmfa\_policy | The IAM policy that allows users to administer their own user accounts, without requiring multi-factor authentication (MFA). |
+| ssm\_session\_role | The IAM role that allows creation of SSM Session Manager sessions to any EC2 instance in this account. |
+| state\_bucket | The S3 bucket where Terraform state information will be stored. |
+| state\_lock\_table | The DynamoDB table that to be used for Terraform state locking. |
+| third\_party\_bucket | The S3 bucket for storing third-party files. |
 <!-- END_TF_DOCS -->
 
 ## Notes ##
@@ -81,13 +149,6 @@ No modules.
 Running `pre-commit` requires running `terraform init` in every directory that
 contains Terraform code. In this repository, these are the main directory and
 every directory under `examples/`.
-
-## New Repositories from a Skeleton ##
-
-Please see our [Project Setup guide](https://github.com/cisagov/development-guide/tree/develop/project_setup)
-for step-by-step instructions on how to start a new repository from
-a skeleton. This will save you time and effort when configuring a
-new repository!
 
 ## Contributing ##
 
