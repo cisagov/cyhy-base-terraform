@@ -14,6 +14,11 @@ variable "state_bucket_name" {
   type        = string
 }
 
+variable "third_party_bucket_name" {
+  description = "The name to use for the S3 bucket that will store third-party files."
+  type        = string
+}
+
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 #

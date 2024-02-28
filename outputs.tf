@@ -37,3 +37,8 @@ output "state_lock_table" {
   description = "The DynamoDB table that to be used for Terraform state locking."
   value       = aws_dynamodb_table.state_lock_table
 }
+
+output "third_party_bucket" {
+  description = "The S3 bucket for storing third-party files."
+  value       = aws_s3_bucket.third_party
+}

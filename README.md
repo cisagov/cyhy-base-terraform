@@ -53,10 +53,15 @@ details on Terraform modules and the standard module structure.
 | [aws_iam_user_group_membership.gods](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_group_membership) | resource |
 | [aws_iam_user_policy_attachment.self_managed_creds_without_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_policy_attachment) | resource |
 | [aws_s3_bucket.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_ownership_controls.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
+| [aws_s3_bucket_ownership_controls.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
 | [aws_s3_bucket_public_access_block.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_public_access_block.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_server_side_encryption_configuration.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
 | [aws_s3_bucket_versioning.state_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
+| [aws_s3_bucket_versioning.third_party](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 | [aws_caller_identity.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.assume_any_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.self_managed_creds_with_mfa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -87,6 +92,7 @@ details on Terraform modules and the standard module structure.
 | state\_table\_read\_capacity | The number of read units for the DynamoDB table that will be used for Terraform state locking. | `number` | `5` | no |
 | state\_table\_write\_capacity | The number of write units for the DynamoDB table that will be used for Terraform state locking. | `number` | `5` | no |
 | tags | Tags to apply to all AWS resources created. | `map(string)` | `{}` | no |
+| third\_party\_bucket\_name | The name to use for the S3 bucket that will store third-party files. | `string` | n/a | yes |
 
 ## Outputs ##
 
@@ -100,6 +106,7 @@ details on Terraform modules and the standard module structure.
 | selfmanagedcredswithoutmfa\_policy | The IAM policy that allows users to administer their own user accounts, without requiring multi-factor authentication (MFA). |
 | state\_bucket | The S3 bucket where Terraform state information will be stored. |
 | state\_lock\_table | The DynamoDB table that to be used for Terraform state locking. |
+| third\_party\_bucket | The S3 bucket for storing third-party files. |
 <!-- END_TF_DOCS -->
 
 ## Notes ##
