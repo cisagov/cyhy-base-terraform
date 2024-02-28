@@ -2,17 +2,50 @@
 
 [![GitHub Build Status](https://github.com/cisagov/cyhy-account/workflows/build/badge.svg)](https://github.com/cisagov/cyhy-account/actions)
 
-This is a generic skeleton project that can be used to quickly get a
-new [cisagov](https://github.com/cisagov) [Terraform
-module](https://www.terraform.io/docs/modules/index.html) GitHub
-repository started.  This skeleton project contains [licensing
-information](LICENSE), as well as [pre-commit
-hooks](https://pre-commit.com) and
-[GitHub Actions](https://github.com/features/actions) configurations
-appropriate for the major languages that we use.
+This project contains the Terraform code that represents the initial configuration
+for an account hosting the [CyHy scanning infrastructure](https://github.com/cisagov/cyhy_amis).
 
-See [here](https://www.terraform.io/docs/modules/index.html) for more
-details on Terraform modules and the standard module structure.
+## Bootstrapping ##
+
+Note that this configuration must be bootstrapped. This is because initially there
+are no resources in the account that can be used to host remote shared Terraform
+state. Therefore you must first apply this Terraform code with no backend configuration
+so that the state is created locally.
+
+To do this, follow these steps:
+
+1. Comment out all the content in the `backend.tf` file.
+1. Run the command `terraform init -upgrade`.  Note that if you have previously
+   used a different Terraform backend (e.g. for a different environment), you
+   will need to run `terraform init -reconfigure -upgrade`.
+1. Create a Terraform workspace (if you haven't already done so) by running
+   `terraform workspace new <workspace_name>`
+1. Create a `<workspace_name>.tfvars` file with all of the required variables and
+   any optional variables that you want to override (see [Inputs](#inputs) below
+   for details):
+
+   ```hcl
+   godlike_usernames       = ["firstname1.lastname1", "firstname2.lastname2"]
+   state_bucket_name       = "my-terraform-state-bucket"
+   third_party_bucket_name = "my-third-party-bucket"
+
+   tags = {
+     Team        = "VM Fusion - Development"
+     Application = "Cyber Hygiene"
+     Workspace   = "production"
+   }
+   ```
+
+1. Run the command `terraform apply -var-file=<workspace_name>.tfvars`.
+1. Revert the changes you made to `backend.tf` in step 1.
+1. Edit the bucket name in `backend.tf` to match the `state_bucket_name` variable
+   in your `<workspace_name>.tfvars` file.
+1. Run the command `terraform init`.  When Terraform asks 'Do you want to migrate
+   all workspaces to "s3"?', enter "yes".
+1. Run the command `terraform apply -var-file=<workspace_name>.tfvars`.
+
+At this point the account has been bootstrapped, and you can apply future changes
+by simply running `terraform apply -var-file=<workspace_name>.tfvars`.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements ##
@@ -116,13 +149,6 @@ details on Terraform modules and the standard module structure.
 Running `pre-commit` requires running `terraform init` in every directory that
 contains Terraform code. In this repository, these are the main directory and
 every directory under `examples/`.
-
-## New Repositories from a Skeleton ##
-
-Please see our [Project Setup guide](https://github.com/cisagov/development-guide/tree/develop/project_setup)
-for step-by-step instructions on how to start a new repository from
-a skeleton. This will save you time and effort when configuring a
-new repository!
 
 ## Contributing ##
 
