@@ -28,6 +28,11 @@ output "selfmanagedcredswithoutmfa_policy" {
   value       = aws_iam_policy.self_managed_creds_without_mfa
 }
 
+output "ssm_session_role" {
+  description = "The IAM role that allows creation of SSM Session Manager sessions to any EC2 instance in this account."
+  value       = module.session_manager.ssm_session_role
+}
+
 output "state_bucket" {
   description = "The S3 bucket where Terraform state information will be stored."
   value       = aws_s3_bucket.state_bucket

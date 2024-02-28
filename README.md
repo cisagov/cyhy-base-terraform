@@ -33,6 +33,7 @@ details on Terraform modules and the standard module structure.
 | Name | Source | Version |
 |------|--------|---------|
 | cw\_alarm\_sns | github.com/cisagov/sns-send-to-account-email-tf-module | n/a |
+| session\_manager | github.com/cisagov/session-manager-tf-module | n/a |
 | user\_group\_mod\_event | github.com/cisagov/user-group-mod-alert-tf-module | n/a |
 | user\_group\_mod\_sns | github.com/cisagov/sns-send-to-account-email-tf-module | n/a |
 
@@ -104,6 +105,7 @@ details on Terraform modules and the standard module structure.
 | gods\_group | The IAM group containing the god-like users that are allowed to access the Terraform backend, are IAM administrators for the Users account, and are allowed to assume any role that has a trust relationship with the Users account. |
 | selfmanagedcredswithmfa\_policy | The IAM policy that allows users to administer their own user accounts, requiring multi-factor authentication (MFA). |
 | selfmanagedcredswithoutmfa\_policy | The IAM policy that allows users to administer their own user accounts, without requiring multi-factor authentication (MFA). |
+| ssm\_session\_role | The IAM role that allows creation of SSM Session Manager sessions to any EC2 instance in this account. |
 | state\_bucket | The S3 bucket where Terraform state information will be stored. |
 | state\_lock\_table | The DynamoDB table that to be used for Terraform state locking. |
 | third\_party\_bucket | The S3 bucket for storing third-party files. |
